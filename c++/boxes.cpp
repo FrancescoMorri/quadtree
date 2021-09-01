@@ -1,6 +1,10 @@
 #include "boxes.h"
 
-boxes::boxes(double x_, double y_, float side_)
+boxes::boxes()
+{
+}
+
+boxes::boxes(float x_, float y_, float side_)
 {
     x = x_;
     y = y_;
@@ -8,7 +12,7 @@ boxes::boxes(double x_, double y_, float side_)
     side2 = side_;
 }
 
-boxes::boxes(double x_, double y_, float side_1, float side_2)
+boxes::boxes(float x_, float y_, float side_1, float side_2)
 {
     x = x_;
     y = y_;
@@ -18,7 +22,7 @@ boxes::boxes(double x_, double y_, float side_1, float side_2)
 
 void boxes::print_info()
 {
-    printf("x = %.2f\ty = %.2f\nside1 = %.1f\tside2 = %.1f\n", this->x, this->y, this->side1, this->side2); 
+    printf("x = %.4f\ty = %.4f\nside1 = %.4f\tside2 = %.4f\n", this->x, this->y, this->side1, this->side2); 
 }
 
 bool boxes::check_point(point_data p)
@@ -27,8 +31,8 @@ bool boxes::check_point(point_data p)
     float left_y = this->y;
     float x_size = this->side1;
     float y_size = this->side2;
-    if ((p.get_coord()[0] > left_x || p.get_coord()[0] < left_x + x_size) &&
-     (p.get_coord()[1] > left_y || p.get_coord()[1] < left_y + y_size))
+    if ((p.get_coord()[0] > left_x && p.get_coord()[0] < left_x + x_size) &&
+     (p.get_coord()[1] > left_y && p.get_coord()[1] < left_y + y_size))
     {
         return true;
     }
@@ -56,4 +60,20 @@ bool boxes::check_intersection(point_data left_corner, point_data right_corner)
         return false;
     }
     
+}
+
+vector<float> boxes::get_coord()
+{
+    vector<float> coords;
+    coords.push_back(this->x);
+    coords.push_back(this->y);
+    return coords;
+}
+
+vector<float> boxes::get_sides()
+{
+    vector<float> sides;
+    sides.push_back(this->side1);
+    sides.push_back(this->side2);
+    return sides;
 }
