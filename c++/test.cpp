@@ -5,7 +5,7 @@ int main(){
     srand(time(NULL));
     float width = 10.;
     float height = 10.;
-    int number_points = 50;
+    int number_points = 10000;
     vector<point_data> points;
     for(int i = 0; i < number_points; i++)
     {
@@ -29,12 +29,27 @@ int main(){
         starting_quad[3].insert_point(points[i]);
     }
     
-    starting_quad[0].print_info();
-    cout<<"--------------------------------------------------------------\n\n";
-    starting_quad[1].print_info();
-    cout<<"--------------------------------------------------------------\n\n";
-    starting_quad[2].print_info();
-    cout<<"--------------------------------------------------------------\n\n";
-    starting_quad[3].print_info();
-    cout<<"--------------------------------------------------------------\n\n";
+    
+    boxes range = boxes(0,0,1);
+    vector<point_data> range_points;
+    vector<point_data> tmp;
+
+    tmp = starting_quad[0].queryRange(range);
+    range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+    
+    tmp = starting_quad[1].queryRange(range);
+    range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+
+    tmp = starting_quad[2].queryRange(range);
+    range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+
+    tmp = starting_quad[3].queryRange(range);
+    range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+
+    //for(int i = 0; i<range_points.size(); i++)
+    //{
+    //    cout<<range_points[i].get_coord()[0]<<" "<<range_points[i].get_coord()[1]<<endl;
+    //}
+    cout<<"Found "<<range_points.size()<<" points in range:\n";
+    range.print_info();
 }

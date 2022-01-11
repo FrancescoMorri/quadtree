@@ -15,7 +15,7 @@ class boxes
         boxes(float x_, float y_, float side_1, float side_2);
         void print_info();
         bool check_point(point_data p);
-        bool check_intersection(point_data left_corner, point_data right_corner);
+        bool check_intersection(boxes range);
         vector<float> get_coord();
         vector<float> get_sides();
 };

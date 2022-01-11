@@ -15,4 +15,6 @@ class quadtree
         void print_info();
         bool insert_point(point_data p);
         void subdivide();
+        vector<point_data> queryRange(boxes range);
+        vector<point_data> get_points();
 };

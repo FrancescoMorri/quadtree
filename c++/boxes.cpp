@@ -42,22 +42,29 @@ bool boxes::check_point(point_data p)
     }
 }
 
-bool boxes::check_intersection(point_data left_corner, point_data right_corner)
+bool boxes::check_intersection(boxes range)
 {
-    boxes range = boxes(left_corner.get_coord()[0], left_corner.get_coord()[1],
-                        right_corner.get_coord()[0] - left_corner.get_coord()[0],
-                        right_corner.get_coord()[1] - left_corner.get_coord()[1]);
-    point_data up_left = point_data(this->x, this->y);
-    point_data down_left = point_data(this->x, this->y + this->side2);
-    point_data down_right = point_data(this->x + this->side1, this->y + this->side2);
-    point_data up_right = point_data(this->x + this->side1, this->y);
-    if(range.check_point(up_left) || range.check_point(down_left) || range.check_point(down_right) || range.check_point(up_right))
+    float A_up_x = this->x;
+    float A_up_y = this->y;
+    float A_down_x = this->x + this->side1;
+    float A_down_y = this->y + this->side2;
+
+    float B_up_x = range.get_coord()[0];
+    float B_up_y = range.get_coord()[1];
+    float B_down_x = range.get_coord()[0] + range.get_sides()[0];
+    float B_down_y = range.get_coord()[1] + range.get_sides()[1];
+    
+    //if this is above range
+    //if this is on the left of range
+    //if range is above this
+    //if range is on the left of this
+    if(A_down_y < B_up_y || A_up_x > B_down_x || B_down_y < A_up_y || B_up_x > A_down_x)
     {
-        return true;
+        return false;
     }
     else
     {
-        return false;
+        return true;
     }
     
 }

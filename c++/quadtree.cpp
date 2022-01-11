@@ -42,7 +42,7 @@ void quadtree::print_info()
 
 void quadtree::subdivide()
 {
-    //here we also divide the points contained by parent quadrant
+    //here we also divide the points contained by parent quadrant (not at the moment)
     //the order of the sub quadrants start from the top left and goes clockwise
 
     vector<float> parent_coord = this->boundary.get_coord();
@@ -75,42 +75,33 @@ void quadtree::subdivide()
                                                 this->id + string("3")));
     
     
-    for(int i = 0; i<this->points.size(); i++)
+    /*for(int i = 0; i<this->points.size(); i++)
     {
         if(this->sub_quadrant[0].insert_point(this->points[i])) continue;
         if(this->sub_quadrant[1].insert_point(this->points[i])) continue;
         if(this->sub_quadrant[2].insert_point(this->points[i])) continue;
         if(this->sub_quadrant[3].insert_point(this->points[i])) continue;
-    }
+    }*/
 }
-
 
 bool quadtree::insert_point(point_data p)
 {
     //check if the point is inside the boundary of the current quadrant, if it is proceed with insertion
     if(!this->boundary.check_point(p))
     {
-        //cout<<"QUAD "<<this->id<<endl;
-        //cout<<"Point not inside\n";
         return false;
     }
     //if there is space insert the point here
     else if(this->points.size() < this->capacity && this->sub_quadrant.size() == 0)
     {
         this->points.push_back(p);
-        //cout<<"QUAD "<<this->id<<endl;
-        //cout<<"Point inserted\n";
         return true;
     }
     //otherwise subdivide the quadrant and insert the point in the correct subquadrant
     else if (this->points.size() == this->capacity)
     {
-        //cout<<"QUAD "<<this->id<<endl;
-        //cout<<"Points--> "<<this->points.size()<<endl;
         if (this->sub_quadrant.size() == 0)
         {
-            
-            //cout<<"Dividing the quad: "<<this->id<<endl<<endl;
             this->subdivide();
         }
         if(this->sub_quadrant[0].insert_point(p)) return true;
@@ -129,4 +120,69 @@ bool quadtree::insert_point(point_data p)
         printf("Something Wrong!!\n");
         return false;
     }
+}
+
+vector<point_data> quadtree::queryRange(boxes range)
+{
+    vector<point_data> range_points;
+    if(!this->boundary.check_intersection(range))
+    {
+        //cout<<this->id<<"---->NO INTERSECTIONS\n";
+        return range_points;
+    }
+
+    for(int i = 0; i<this->points.size(); i++)
+    {
+        if(range.check_point(this->points[i]))
+        {
+            range_points.push_back(this->points[i]);
+        }
+    }
+    if(this->sub_quadrant.size() == 4)
+    {
+        vector<point_data> tmp;
+        tmp = this->sub_quadrant[0].queryRange(range);
+        range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+        tmp.clear();
+
+        tmp = this->sub_quadrant[1].queryRange(range);
+        range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+        tmp.clear();
+
+        tmp = this->sub_quadrant[2].queryRange(range);
+        range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+        tmp.clear();
+
+        tmp = this->sub_quadrant[3].queryRange(range);
+        range_points.insert(range_points.end(), tmp.begin(), tmp.end());
+    }
+    return range_points;
+}
+
+
+vector<point_data> quadtree::get_points()
+{
+    vector<point_data> tmp;
+    tmp.insert(tmp.end(), this->points.begin(), this->points.end());
+
+    if(this->sub_quadrant.size() == 4)
+    {
+        vector<point_data> tmp2;
+        tmp2 = this->sub_quadrant[0].get_points();
+        tmp.insert(tmp.end(), tmp2.begin(), tmp2.end());
+        tmp2.clear();
+
+        tmp2 = this->sub_quadrant[1].get_points();
+        tmp.insert(tmp.end(), tmp2.begin(), tmp2.end());
+        tmp2.clear();
+
+        tmp2 = this->sub_quadrant[2].get_points();
+        tmp.insert(tmp.end(), tmp2.begin(), tmp2.end());
+        tmp2.clear();
+
+        tmp2 = this->sub_quadrant[3].get_points();
+        tmp.insert(tmp.end(), tmp2.begin(), tmp2.end());
+    }
+
+    return tmp;
 }
